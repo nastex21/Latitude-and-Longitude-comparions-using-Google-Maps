@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <title>My Google Map</title>
+</head>
+
+<body>
+    <h1>My Google Map</h1>
+    <div>
+        <button onclick="getLoc()">Get My Coordinates</button>
+        <button onclick="getLats()">Get Comparable Latitudes</button>
+        <button onclick="getLngs()">Get Comparable Longitudes</button>
+        <p id="clientLoc"></p>
+    </div>
+    <div id="map"></div>
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=INSERT YOUR OWN API KEY&callback=initMap">
+    </script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
