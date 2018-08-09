@@ -8,17 +8,73 @@
 
 <body>
     <h1>My Google Map</h1>
-    <div>
-        <button onclick="getLoc()">Get My Coordinates</button>
-        <button onclick="getLats()">Get Comparable Latitudes</button>
-        <button onclick="getLngs()">Get Comparable Longitudes</button>
-        <p id="clientLoc"></p>
+    <div id="container">
+        <div id="padding">
+            <div class="inputDivs" id="coordButton">
+                <div id="latOutput">
+                    <div class="outputNum">
+                        <span id="clientLat">25.761</span>
+                    </div>
+                    <div class="outputNum">
+                        <span id="clientLong">-80.191</span>
+                    </div>
+                </div>
+                <div id="labels">
+                    <div class="labelsUnits">
+                        <span>Latitude</span>
+                    </div>
+                    <div class="labelsUnits">
+                        <span>Longitude</span>
+                    </div>
+
+                </div>
+                <div class="bottomButtons">
+                    <button class="inputButtons" onclick="getLoc()">Get My Coordinates</button>
+                </div>
+
+            </div>
+            <div class="inputDivs" id="latDiv">
+                <div class="outputAdjust">
+                    <span id="adjustLat">0</span>
+                </div>
+                <div class="midButtons">
+                    <div class="negButton">
+                        <button value="negLat" onclick="adjustLatLng(value)">-</button>
+                    </div>
+                    <div class="posButton">
+                        <button value="posLat" onclick="adjustLatLng(value)">+</button>
+                    </div>
+                </div>
+                <div class="bottomButtons">
+                    <button class="inputButtons" onclick="getLats()">Get Comparable Latitudes</button>
+                </div>
+            </div>
+            <div class="inputDivs" id="lngDiv">
+                <div class="outputAdjust">
+                    <span id="adjustLng">0</span>
+                </div>
+                <div class="midButtons">
+                    <div class="negButton">
+                        <button value="negLng" onclick="adjustLatLng(value)">-</button>
+                    </div>
+                    <div class="posButton">
+                        <button value="posLng" onclick="adjustLatLng(value)">+</button>
+                    </div>
+                </div>
+                <div class="bottomButtons">
+                    <button class="inputButtons" onclick="getLngs()">Get Comparable Longitudes</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="map"></div>
+    <div id="map">
+
     </div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=INSERT YOUR OWN API KEY&callback=initMap">
+
+    <div id="table"></div>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=INPUT_YOUR_OWN_API_KEY&callback=initMap">
     </script>
-    <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 

@@ -1,4 +1,101 @@
+html, body { 
+    height: 100%; 
+    width: 100%; 
+    margin: 0; 
+}
+
+h1 {
+    text-align: center;
+}
+
+#container{
+    width: 60%;
+    height: 20%;
+    position: relative;
+}
+
+#padding{
+    width: 100%;
+    padding-left: 30%;
+    height: 100%;
+    position: relative;
+}
+
+.inputDivs{
+    float: left;
+    width: 33.33%;
+    position: relative;
+    height: 100%;
+}
+
+#container:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#latOutput{
+    height: 50%;
+    width: 100%;
+}
+
+.outputNum{
+    width: 50%;
+    float: left;
+    text-align: center;
+}
+
+.outputAdjust{
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+
+#labels{
+    height: 30%;
+    width: 100%;
+}
+
+.labelsUnits{
+    width: 50%;
+    float: left;
+    text-align: center;
+}
+
+.midButtons{
+    width: 100%;
+    height: 30%;
+}
+
+.negButton{
+    width: 50%;
+    float: left;
+    display: flex;
+    justify-content: center;
+}
+
+.posButton{
+    width: 50%;
+    float: right;
+    display: flex;
+    justify-content: center;
+}
+
+.bottomButtons{
+    width: 100%;
+    height: 20%;
+}
+
+.inputButtons{
+    position: relative;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+} 
+
 #map {
     height: 400px;
     width: 100%;
 }
+
