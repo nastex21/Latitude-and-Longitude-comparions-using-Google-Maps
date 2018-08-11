@@ -66,9 +66,12 @@ function adjustLatLng(value) {
 }
 
 function createTable() {
-    var elm = document.getElementById('tableElm');
+    var container = document.getElementById("bodyContainer");
+    var newDiv = document.createElement("div"); 
+    newDiv.setAttribute("id", "table");
 
     var table = document.createElement('table');
+    table.setAttribute("id", "dynamicTable");
     var tr = document.createElement('tr');
 
     var th1 = document.createElement('th');
@@ -87,6 +90,8 @@ function createTable() {
     tr.appendChild(th3);
 
     table.appendChild(tr);
+    newDiv.appendChild(table);
+    container.appendChild(newDiv);
 
     for (var i = 1; i < arr.length; i++) {
         var tr = document.createElement('tr');
@@ -109,6 +114,18 @@ function createTable() {
         table.appendChild(tr);
     }
     document.getElementById("table").appendChild(table);
+    var btn = document.createElement("BUTTON");
+    btn.setAttribute("id", "clearBtn");
+    btn.setAttribute("onclick", "clearTable()");
+    var t = document.createTextNode("Clear");
+    btn.appendChild(t);
+    document.getElementById("table").appendChild(btn);
+    
+}
+
+function clearTable() {
+    let table = document.getElementById("table");
+    table.remove();
 }
 
 function getLats() {
@@ -231,5 +248,4 @@ function initMap() {
         setMapOnAll(null);
         markers = [];
     }
-
 }

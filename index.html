@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="bodyContainer">
         <div id="header">
             <h1 id="latLngMap">Latitude and Longitude Comparison</h1>
         </div>
@@ -38,12 +38,12 @@
                 <div class="outputAdjust">
                     <span id="adjustLat">0</span>
                 </div>
-                    <div class="negButton">
-                        <button value="negLat" onclick="adjustLatLng(value)">-</button>
-                    </div>
-                    <div class="posButton">
-                        <button value="posLat" onclick="adjustLatLng(value)">+</button>
-                    </div>
+                <div class="negButton">
+                    <button value="negLat" onclick="adjustLatLng(value)">-</button>
+                </div>
+                <div class="posButton">
+                    <button value="posLat" onclick="adjustLatLng(value)">+</button>
+                </div>
                 <div class="bottomButtons">
                     <button class="inputButtons" onclick="getLats()">Get Comparable Latitudes</button>
                 </div>
@@ -55,25 +55,22 @@
                 <div class="outputAdjust">
                     <span id="adjustLng">0</span>
                 </div>
-                    <div class="negButton">
-                        <button value="negLng" onclick="adjustLatLng(value)">-</button>
-                    </div>
-                    <div class="posButton">
-                        <button value="posLng" onclick="adjustLatLng(value)">+</button>
-                    </div>
+                <div class="negButton">
+                    <button value="negLng" onclick="adjustLatLng(value)">-</button>
+                </div>
+                <div class="posButton">
+                    <button value="posLng" onclick="adjustLatLng(value)">+</button>
+                </div>
                 <div class="bottomButtons">
                     <button class="inputButtons" onclick="getLngs()">Get Comparable Longitudes</button>
                 </div>
             </div>
         </div>
-        <div id="table">
-
-        </div>
         <div id="map"></div>
     </div>
 
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR API HERE&callback=initMap ">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwGA7Rcpp7RwSVl6Yn-r2hOY49uxfdZCs&callback=initMap ">
     </script>
     <script src="js/script.js "></script>
 </body>
