@@ -18,6 +18,7 @@ var latAdjust = document.getElementById("adjustLat").innerHTML;
 var lngAdjust = document.getElementById("adjustLng").innerHTML;
 var arr = [];
 var counter = 0;
+var checkArr = [];
 
 function getLoc() {
     deleteMarkers();
@@ -65,35 +66,51 @@ function adjustLatLng(value) {
     }
 }
 
+function removeButton() {
+    let button = document.getElementById("clearBtn");
+    button.remove();
+}
+
 function createTable() {
-    var container = document.getElementById("bodyContainer");
-    var newDiv = document.createElement("div"); 
-    newDiv.setAttribute("id", "table");
+    if (document.getElementById("dynamicTable") == null) {
+        console.log("does equal null");
+        var container = document.getElementById("bodyContainer");
+        var newDiv = document.createElement("div");
+        newDiv.setAttribute("id", "table");
 
-    var table = document.createElement('table');
-    table.setAttribute("id", "dynamicTable");
-    var tr = document.createElement('tr');
 
-    var th1 = document.createElement('th');
-    var th2 = document.createElement('th');
-    var th3 = document.createElement('th');
-    var thtext1 = document.createTextNode('City');
-    var thtext2 = document.createTextNode('Latitude');
-    var thtext3 = document.createTextNode('Longitude');
+        var table = document.createElement('table');
+        table.setAttribute("id", "dynamicTable");
+        var tr = document.createElement('tr');
 
-    th1.appendChild(thtext1);
-    th2.appendChild(thtext2);
-    th3.appendChild(thtext3);
+        var th1 = document.createElement('th');
+        var th2 = document.createElement('th');
+        var th3 = document.createElement('th');
+        var thtext1 = document.createTextNode('City');
+        var thtext2 = document.createTextNode('Latitude');
+        var thtext3 = document.createTextNode('Longitude');
 
-    tr.appendChild(th1);
-    tr.appendChild(th2);
-    tr.appendChild(th3);
 
-    table.appendChild(tr);
-    newDiv.appendChild(table);
-    container.appendChild(newDiv);
+        th1.appendChild(thtext1);
+        th2.appendChild(thtext2);
+        th3.appendChild(thtext3);
+
+        tr.appendChild(th1);
+        tr.appendChild(th2);
+        tr.appendChild(th3);
+
+        table.appendChild(tr);
+        newDiv.appendChild(table);
+
+        container.appendChild(newDiv);
+    }
+
+
 
     for (var i = 1; i < arr.length; i++) {
+
+        let table = document.getElementById("dynamicTable");
+
         var tr = document.createElement('tr');
 
         var td1 = document.createElement('td');
@@ -113,45 +130,56 @@ function createTable() {
 
         table.appendChild(tr);
     }
-    document.getElementById("table").appendChild(table);
+
     var btn = document.createElement("BUTTON");
     btn.setAttribute("id", "clearBtn");
     btn.setAttribute("onclick", "clearTable()");
     var t = document.createTextNode("Clear");
     btn.appendChild(t);
     document.getElementById("table").appendChild(btn);
-    
 }
 
 function clearTable() {
     let table = document.getElementById("table");
     table.remove();
+    removeButton();
 }
 
 function getLats() {
-    deleteMarkers();
+
     latAdjust = Number(latAdjust);
+    var passTest = checkArr.indexOf(latAdjust); //-1 
+    checkArr.push(latAdjust);
     var latitude = latAdjust + latCoords;
     latitude = latitude.toFixed(3);
     arr = [];
 
-    if (counter == 0) {
-        for (var i = 0; i < database.length; i++) {
-            if (latitude >= Math.floor(database[i].lat) && latitude <= Math.ceil(database[i].lat)) {
-                counter = 1;
-                var pos = {
-                    coords: {
-                        lat: JSON.parse(Number(database[i].lat).toFixed(3)),
-                        lng: JSON.parse(Number(database[i].lng).toFixed(3))
-                    },
-                    content: database[i].city + ", " + database[i].country
-                };
-                addMarker(pos);
-                arr.push(pos);
+    if (passTest == -1) {
+        if (counter == 0) {
+            deleteMarkers();
+            for (var i = 0; i < database.length; i++) {
+                if (latitude >= Math.floor(database[i].lat) && latitude <= Math.ceil(database[i].lat)) {
+                    counter = 1;
+                    var pos = {
+                        coords: {
+                            lat: JSON.parse(Number(database[i].lat).toFixed(3)),
+                            lng: JSON.parse(Number(database[i].lng).toFixed(3))
+                        },
+                        content: database[i].city + ", " + database[i].country
+                    };
+                    addMarker(pos);
+                    arr.push(pos);
+                }
             }
+            if (document.getElementById("clearBtn") !== null) {
+                removeButton();
+            }
+            createTable();
         }
-        createTable();
+    } else {
+        window.alert(latAdjust + " latitude adjust values are already in table");
     }
+
 
 }
 
