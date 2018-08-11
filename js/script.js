@@ -93,7 +93,6 @@ function createTable() {
 
         table.appendChild(tr);
     } else {
-        console.log("does equal null");
         var container = document.getElementById("bodyContainer");
         var newDiv = document.createElement("div");
         newDiv.setAttribute("id", "table");
@@ -124,8 +123,7 @@ function createTable() {
         container.appendChild(newDiv);
     }
 
-    for (var i = 1; i < arr.length; i++) {
-
+    for (var i = 0; i < arr.length; i++) {
         let table = document.getElementById("dynamicTable");
 
         var tr = document.createElement('tr');
@@ -157,17 +155,14 @@ function createTable() {
 }
 
 function clearTable() {
-    console.log("YES");
     let table = document.getElementById("table");
     table.remove();
     checkArr = [];
     deleteMarkers();
     counter = 0;
-    console.log(checkArr);
 }
 
 function getLats() {
-    console.log(checkArr);
     latAdjust = Number(latAdjust);
     var passTest = checkArr.indexOf(latAdjust); //-1 
     checkArr.push(latAdjust);
@@ -203,29 +198,37 @@ function getLats() {
 }
 
 function getLngs() {
-    deleteMarkers();
     lngAdjust = Number(lngAdjust);
+    var passTest = checkArr.indexOf(lngAdjust); //-1 
+    checkArr.push(lngAdjust);
     var longitude = lngAdjust + lngCoords;
     longitude = longitude.toFixed(3);
     arr = [];
 
-    if (counter == 0) {
-        for (var i = 0; i < database.length; i++) {
-            counter = 1;
-            num = JSON.parse(database[i].lng);
-            num = Number(num);
-            if (longitude <= Math.ceil(num) && longitude >= Math.floor(num)) {
-                var pos = {
-                    coords: {
-                        lat: JSON.parse(database[i].lat),
-                        lng: JSON.parse(database[i].lng)
-                    },
-                    content: database[i].city + ", " + database[i].country
-                };
-                addMarker(pos);
-                arr.push(pos)
+    if (passTest == -1) {
+        if (counter == 0) {
+            deleteMarkers();
+            for (var i = 0; i < database.length; i++) {
+                if (longitude >= Math.floor(database[i].lng) && longitude <= Math.ceil(database[i].lng)) {
+                    counter = 1;
+                    var pos = {
+                        coords: {
+                            lat: JSON.parse(Number(database[i].lat).toFixed(3)),
+                            lng: JSON.parse(Number(database[i].lng).toFixed(3))
+                        },
+                        content: database[i].city + ", " + database[i].country
+                    };
+                    addMarker(pos);
+                    arr.push(pos);
+                }
             }
+            if (document.getElementById("clearBtn") !== null) {
+                removeButton();
+            }
+            createTable();
         }
+    } else {
+        window.alert(lngAdjust + " longitude adjust values are already in table");
     }
 }
 
