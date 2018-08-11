@@ -18,7 +18,10 @@ var latAdjust = document.getElementById("adjustLat").innerHTML;
 var lngAdjust = document.getElementById("adjustLng").innerHTML;
 var arr = [];
 var counter = 0;
-var checkArr = [];
+var checkLat = [];
+var checkLng = [];
+var latCounter = 0;
+var lngCounter = 0;
 
 function getLoc() {
     deleteMarkers();
@@ -157,21 +160,23 @@ function createTable() {
 function clearTable() {
     let table = document.getElementById("table");
     table.remove();
-    checkArr = [];
+    checkLat = [];
+    checkLng = [];
     deleteMarkers();
     counter = 0;
 }
 
 function getLats() {
+    latCounter = 1;
     latAdjust = Number(latAdjust);
-    var passTest = checkArr.indexOf(latAdjust); //-1 
-    checkArr.push(latAdjust);
+    var passTest = checkLat.indexOf(latAdjust); //-1 
+    checkLat.push(latAdjust);
     var latitude = latAdjust + latCoords;
     latitude = latitude.toFixed(3);
     arr = [];
 
     if (passTest == -1) {
-        if (counter == 0) {
+        if (counter == 0 || lngCounter == 1) {
             deleteMarkers();
             for (var i = 0; i < database.length; i++) {
                 if (latitude >= Math.floor(database[i].lat) && latitude <= Math.ceil(database[i].lat)) {
@@ -198,15 +203,16 @@ function getLats() {
 }
 
 function getLngs() {
+    lngCounter = 1;
     lngAdjust = Number(lngAdjust);
-    var passTest = checkArr.indexOf(lngAdjust); //-1 
-    checkArr.push(lngAdjust);
+    var passTest = checkLng.indexOf(lngAdjust); //-1 
+    checkLng.push(lngAdjust);
     var longitude = lngAdjust + lngCoords;
     longitude = longitude.toFixed(3);
     arr = [];
 
     if (passTest == -1) {
-        if (counter == 0) {
+        if (counter == 0 || latCounter == 1) {
             deleteMarkers();
             for (var i = 0; i < database.length; i++) {
                 if (longitude >= Math.floor(database[i].lng) && longitude <= Math.ceil(database[i].lng)) {
