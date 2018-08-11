@@ -72,7 +72,27 @@ function removeButton() {
 }
 
 function createTable() {
-    if (document.getElementById("dynamicTable") == null) {
+    if (document.getElementById("dynamicTable") !== null) {
+        var tr = document.createElement('tr');
+        var th1 = document.createElement('th');
+        var th2 = document.createElement('th');
+        var th3 = document.createElement('th');
+        var thtext1 = document.createTextNode('City');
+        var thtext2 = document.createTextNode('Latitude');
+        var thtext3 = document.createTextNode('Longitude');
+
+        th1.appendChild(thtext1);
+        th2.appendChild(thtext2);
+        th3.appendChild(thtext3);
+
+        tr.appendChild(th1);
+        tr.appendChild(th2);
+        tr.appendChild(th3);
+
+        let table = document.getElementById("dynamicTable");
+
+        table.appendChild(tr);
+    } else {
         console.log("does equal null");
         var container = document.getElementById("bodyContainer");
         var newDiv = document.createElement("div");
@@ -90,7 +110,6 @@ function createTable() {
         var thtext2 = document.createTextNode('Latitude');
         var thtext3 = document.createTextNode('Longitude');
 
-
         th1.appendChild(thtext1);
         th2.appendChild(thtext2);
         th3.appendChild(thtext3);
@@ -104,8 +123,6 @@ function createTable() {
 
         container.appendChild(newDiv);
     }
-
-
 
     for (var i = 1; i < arr.length; i++) {
 
@@ -140,13 +157,17 @@ function createTable() {
 }
 
 function clearTable() {
+    console.log("YES");
     let table = document.getElementById("table");
     table.remove();
-    removeButton();
+    checkArr = [];
+    deleteMarkers();
+    counter = 0;
+    console.log(checkArr);
 }
 
 function getLats() {
-
+    console.log(checkArr);
     latAdjust = Number(latAdjust);
     var passTest = checkArr.indexOf(latAdjust); //-1 
     checkArr.push(latAdjust);
@@ -179,8 +200,6 @@ function getLats() {
     } else {
         window.alert(latAdjust + " latitude adjust values are already in table");
     }
-
-
 }
 
 function getLngs() {
