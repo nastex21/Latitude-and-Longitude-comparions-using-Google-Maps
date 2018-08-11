@@ -14,22 +14,16 @@
         </div>
         <div id="outInput">
             <div class="inputDivs" id="coordButton">
-                <div class="labelsUnits">
-                    <span>Latitude</span>
-                </div>
-                <div class="labelsUnits">
-                    <span>Longitude</span>
-                </div>
-                <div class="outputNum">
-                    <span id="clientLat">25.761</span>
-                </div>
-                <div class="outputNum">
-                    <span id="clientLong">-80.191</span>
-                </div>
+                    <form id="latitudeLongitude">
+                        <span id="latLabel">Latitude</span>
+                        <input id="latInput" type="text" name="latitude" placeholder="25.761">
+                        <span id="lngLabel">Longitude</span>
+                        <input id="lngInput" type="text" name="longitude" placeholder="-80.191">
+                        <input type="button" id="submitBtn" value="Submit" onclick="submitData()">
+                    </form>
                 <div class="bottomButtons">
                     <button class="inputButtons" onclick="getLoc()">Get My Coordinates</button>
                 </div>
-
             </div>
             <div class="inputDivs iDivs" id="latDiv">
                 <div class="latAdjust">
@@ -70,8 +64,8 @@
     </div>
 
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=USE YOUR OWN API&callback=initMap ">
-    </script>
+    <!--     <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR GOOGLE API KEY&callback=initMap ">
+    </script> -->
     <script src="js/script.js "></script>
 </body>
 

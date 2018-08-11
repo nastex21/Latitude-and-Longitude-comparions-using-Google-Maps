@@ -1,3 +1,5 @@
+//Add an input box
+
 var link = "https://res.cloudinary.com/nasax2000/raw/upload/v1533707950/city-data_o7peii.json";
 var request = new XMLHttpRequest();
 var database;
@@ -6,6 +8,13 @@ request.responseType = 'json';
 request.send();
 request.onload = function () {
     database = request.response;
+}
+function submitData() {
+    var x = document.getElementById("latInput").value;
+    var y = document.getElementById("lngInput").value;
+    console.log(x); //latitude needs to be between 90 <= x => -90
+    console.log(y); //longitude needs to be between 180 <= y => -180
+    //addMarker to add marker
 }
 
 var x = document.getElementById("clientLat");
