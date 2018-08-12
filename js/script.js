@@ -1,11 +1,8 @@
-//Fix the input box functionality *FIXED*
-//added a check. Latitude needs to be between 90 and -90 while longitude needs to be between -180 and 180. FIXED
-//fixed the submit button FIXED
-//need to add a content box; do a reverse lookup FIXED
 //weird error when you click "Get my coordinates and then submit button"
 //clear leftover markers after clicking "submit"
 //Also make sure to clear arrays, etc
-//address bug... especially when in the middle of nowhere. "formatted address"
+//address bug... especially when in the middle of nowhere
+//give error when there's no longitude/latitude found in the db
 
 var link = "https://res.cloudinary.com/nasax2000/raw/upload/v1533707950/city-data_o7peii.json";
 var request = new XMLHttpRequest();
@@ -21,59 +18,50 @@ var y = document.getElementById("clientLong");
 var latCoords = 25.761;
 var lngCoords = -80.191;
 var pos, addMarker, map;
+var markers = [];
 var latAdjust = document.getElementById("adjustLat").innerHTML;
 var lngAdjust = document.getElementById("adjustLng").innerHTML;
 var arr = [];
+var startingCounter = 0;
 var counter = 0;
 var checkLat = [];
 var checkLng = [];
 var latCounter = 0;
 var lngCounter = 0;
-var markers = [];
-
-function clearData(){
-    arr = [];
-    counter = 0;
-    checkLat = [];
-    checkLng = [];
-    latCounter = 0;
-    lngCounter = 0;
-    markers = [];
-}
+var latitude, longitude;
 
 function submitData() {
-    clearData();
     deleteMarkers();
-    var x = document.getElementById("latInput").value;
-    x = Number(x).toFixed(3);
-    var y = document.getElementById("lngInput").value;
-    y = Number(y).toFixed(3);
+    startingCounter = 1;
+    latCoords = document.getElementById("latInput").value;
+    latCoords = Number(latCoords).toFixed(3)
+    lngCoords = document.getElementById("lngInput").value;
+    lngCoords = Number(lngCoords).toFixed(3);
     //addMarker to add marker
-    console.log(x);
-    if (Math.abs(x) > 90) {
+
+    if (Math.abs(latCoords) > 90) {
         window.alert("Latitude needs to be between 90 and -90");
         return;
     }
-    if (Math.abs(y) > 180) {
+    if (Math.abs(lngCoords) > 180) {
         window.alert("Longitude needs to be between 180 and -180");
         return;
     }
     pos = {
         coords: {
-            lat: Number(x),
-            lng: Number(y)
+            lat: Number(latCoords),
+            lng: Number(lngCoords)
         },
         inputFlag: {
             flag: true
         }
     };
-    console.log(pos);
-
     addMarker(pos);
 }
 
 function getLoc() {
     deleteMarkers();
+    startingCounter = 1;
     document.getElementById("adjustLat").innerHTML = 0;
     document.getElementById("adjustLng").innerHTML = 0;
     latAdjust = 0;
@@ -220,8 +208,8 @@ function getLats() {
     latAdjust = Number(latAdjust);
     var passTest = checkLat.indexOf(latAdjust); //-1 
     checkLat.push(latAdjust);
-    var latitude = latAdjust + latCoords;
-    latitude = latitude.toFixed(3);
+    var latitude = latAdjust + Number(latCoords);
+    console.log(latitude);
     arr = [];
 
     if (passTest == -1) {
@@ -256,8 +244,7 @@ function getLngs() {
     lngAdjust = Number(lngAdjust);
     var passTest = checkLng.indexOf(lngAdjust); //-1 
     checkLng.push(lngAdjust);
-    var longitude = lngAdjust + lngCoords;
-    longitude = longitude.toFixed(3);
+    var longitude = lngAdjust + Number(lngCoords);
     arr = [];
 
     if (passTest == -1) {
@@ -308,8 +295,8 @@ function initMap() {
     var options = {
         zoom: 1,
         center: {
-            lat: 25.761,
-            lng: -80.191
+            lat: startingCounter == 0 ? 25.761 : latitude,
+            lng: startingCounter == 0 ? -80.191 : longitude
         }
     }
 
