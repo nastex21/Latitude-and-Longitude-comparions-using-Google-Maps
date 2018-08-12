@@ -1,4 +1,11 @@
-//Add an input box
+//Fix the input box functionality *FIXED*
+//added a check. Latitude needs to be between 90 and -90 while longitude needs to be between -180 and 180. FIXED
+//fixed the submit button FIXED
+//need to add a content box; do a reverse lookup FIXED
+//weird error when you click "Get my coordinates and then submit button"
+//clear leftover markers after clicking "submit"
+//Also make sure to clear arrays, etc
+//address bug... especially when in the middle of nowhere. "formatted address"
 
 var link = "https://res.cloudinary.com/nasax2000/raw/upload/v1533707950/city-data_o7peii.json";
 var request = new XMLHttpRequest();
@@ -9,20 +16,11 @@ request.send();
 request.onload = function () {
     database = request.response;
 }
-function submitData() {
-    var x = document.getElementById("latInput").value;
-    var y = document.getElementById("lngInput").value;
-    console.log(x); //latitude needs to be between 90 <= x => -90
-    console.log(y); //longitude needs to be between 180 <= y => -180
-    //addMarker to add marker
-}
-
 var x = document.getElementById("clientLat");
 var y = document.getElementById("clientLong");
 var latCoords = 25.761;
 var lngCoords = -80.191;
 var pos, addMarker, map;
-var markers = [];
 var latAdjust = document.getElementById("adjustLat").innerHTML;
 var lngAdjust = document.getElementById("adjustLng").innerHTML;
 var arr = [];
@@ -31,6 +29,48 @@ var checkLat = [];
 var checkLng = [];
 var latCounter = 0;
 var lngCounter = 0;
+var markers = [];
+
+function clearData(){
+    arr = [];
+    counter = 0;
+    checkLat = [];
+    checkLng = [];
+    latCounter = 0;
+    lngCounter = 0;
+    markers = [];
+}
+
+function submitData() {
+    clearData();
+    deleteMarkers();
+    var x = document.getElementById("latInput").value;
+    x = Number(x).toFixed(3);
+    var y = document.getElementById("lngInput").value;
+    y = Number(y).toFixed(3);
+    //addMarker to add marker
+    console.log(x);
+    if (Math.abs(x) > 90) {
+        window.alert("Latitude needs to be between 90 and -90");
+        return;
+    }
+    if (Math.abs(y) > 180) {
+        window.alert("Longitude needs to be between 180 and -180");
+        return;
+    }
+    pos = {
+        coords: {
+            lat: Number(x),
+            lng: Number(y)
+        },
+        inputFlag: {
+            flag: true
+        }
+    };
+    console.log(pos);
+
+    addMarker(pos);
+}
 
 function getLoc() {
     deleteMarkers();
@@ -263,6 +303,7 @@ function showPosition(position) {
 }
 
 function initMap() {
+
     //map options
     var options = {
         zoom: 1,
@@ -274,17 +315,19 @@ function initMap() {
 
     //New map
     var map = new google.maps.Map(document.getElementById('map'), options);
-
+    var geocoder = new google.maps.Geocoder;
     var infoWindow = new google.maps.InfoWindow;
 
     setPosition = function (props) {
-        map.setCenter(props.pos);
-        x.innerHTML = props.coords.lat;
-        y.innerHTML = props.coords.lng;
+        console.log(props);
+        map.setCenter(props.coords);
+        /* x.innerHTML = props.coords.lat;
+        y.innerHTML = props.coords.lng; */
     }
 
     //Add Marker Function
     addMarker = function (props) {
+        console.log(props)
         var marker = new google.maps.Marker({
             position: props.coords,
             map: map
@@ -300,6 +343,9 @@ function initMap() {
                 infoWindow.open(map, marker);
             })
         }
+        if (props.inputFlag) {
+            geocodeLatLng(geocoder, map, infoWindow)
+        }
     }
 
     // Sets the map on all markers in the array.
@@ -312,5 +358,49 @@ function initMap() {
     deleteMarkers = function () {
         setMapOnAll(null);
         markers = [];
+    }
+
+    geocodeLatLng = function (geocoder, map, infowindow) {
+        /*  var input = document.getElementById('latlng').value;
+         var latlngStr = input.split(',', 2);
+         var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])}; */
+        var infoWindow = new google.maps.InfoWindow;
+        var x = document.getElementById("latInput").value;
+        x = Number(x).toFixed(3);
+        var y = document.getElementById("lngInput").value;
+        y = Number(y).toFixed(3);
+
+        var latlng = {
+            lat: Number(x),
+            lng: Number(y)
+        }
+
+        geocoder.geocode({
+            'location': latlng
+        }, function (results, status) {
+            console.log(results);
+            console.log(results[5].formatted_address);
+            if (status === 'OK') {
+                if (results[5]) {
+                    map.setZoom(1);
+                    var marker = new google.maps.Marker({
+                        position: latlng,
+                        map: map
+                    });
+                    var pos = {
+                        coords: {
+                            lat: Number(x),
+                            lng: Number(y)
+                        },
+                        content: results[5].formatted_address
+                    }
+                    addMarker(pos);
+                } else {
+                    window.alert('No results found');
+                }
+            } else {
+                window.alert('Geocoder failed due to: ' + status);
+            }
+        });
     }
 }
