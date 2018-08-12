@@ -1,6 +1,4 @@
-//weird error when you click "Get my coordinates and then submit button"
 //clear leftover markers after clicking "submit"
-//Also make sure to clear arrays, etc
 //address bug... especially when in the middle of nowhere
 //give error when there's no longitude/latitude found in the db
 
@@ -31,6 +29,9 @@ var lngCounter = 0;
 var latitude, longitude;
 
 function submitData() {
+    counter = 0;
+    checkLat = [];
+    checkLng = [];
     deleteMarkers();
     startingCounter = 1;
     latCoords = document.getElementById("latInput").value;
@@ -60,6 +61,9 @@ function submitData() {
 }
 
 function getLoc() {
+    counter = 0;
+    checkLat = [];
+    checkLng = [];
     deleteMarkers();
     startingCounter = 1;
     document.getElementById("adjustLat").innerHTML = 0;
