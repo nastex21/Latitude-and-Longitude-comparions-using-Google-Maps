@@ -1,7 +1,6 @@
-//Fixed going from "get my coordinates" to "submit location"
 //need to get reverse geo location and content windows
 
-var map, infoWindow;
+var map, infoWindow, geocoder;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
 var latCoords; //values of the box input lat values
@@ -29,14 +28,14 @@ function getLoc() {
         navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
                 lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lng: position.coords.longitude,
             };
             map.setCenter(pos);
             addMarker(pos);
             arrTable.push(pos);
             latCoords = pos.lat;
             lngCoords = pos.lng;
-            console.log(arrTable);
+            geocodeLatLng(geocoder, map, infoWindow);
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -62,9 +61,6 @@ function submitData() {
     lngCoords = document.getElementById("lngInput").value; //values of the box input lng values
     latCoords = Number(latCoords).toFixed(3);
     lngCoords = Number(lngCoords).toFixed(3);
-    console.log(latCoords);
-    console.log(lngCoords);
-
 
     if (Math.abs(latCoords) > 90) {
         window.alert("Latitude needs to be between 90 and -90");
@@ -82,6 +78,7 @@ function submitData() {
     map.setCenter(pos);
     addMarker(pos);
     arrTable.push(pos);
+    geocodeLatLng(geocoder, map, infoWindow);
 }
 
 function adjustLatLng(value) {
@@ -123,7 +120,6 @@ function getLats() {
     }
     checkLat.push(latAdjust); //push the latitude adjust value to the array
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
-    console.log(latitude);
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
 
@@ -156,7 +152,6 @@ function getLngs() {
     var lngCoords = document.getElementById("lngInput").value; //get values from input box
     var lngCounter = 1; //longitude function was used if = 1. 
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
-    console.log(longitude);
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
 
@@ -230,7 +225,6 @@ function createTable() {
     }
 
     for (var i = 0; i < arrTable.length; i++) {
-        console.log(arrTable);
         let table = document.getElementById("dynamicTable");
 
         var tr = document.createElement('tr');
@@ -285,6 +279,8 @@ function initMap() {
         zoom: 2
     });
     infoWindow = new google.maps.InfoWindow;
+    geocoder = new google.maps.Geocoder;
+
 }
 
 // Adds a marker to the map and push to the array.
@@ -294,7 +290,18 @@ function addMarker(location) {
         map: map
     });
     arr.push(marker);
+
+    if (location.content) {
+        var infoWindow = new google.maps.InfoWindow({
+            content: location.content
+        });
+
+        marker.addListener('click', function () {
+            infoWindow.open(map, marker);
+        })
+    }
 }
+
 
 // Sets the map on all arr in the array.
 function setMapOnAll(map) {
@@ -315,7 +322,6 @@ function showMarkers() {
 
 // Deletes all arr in the array by removing references to them.
 function deleteMarkers() {
-    console.log("deleteMarkers() called")
     clearMarkers();
     arr = []; //array to keep track of arr and delete
     arrTable = []; //used for table
@@ -323,7 +329,7 @@ function deleteMarkers() {
     checkLng = []; //an array to check the longitude adjust values
 }
 
-function submitGetLocClearData(){ //only used to clear innerHTML when submit and get Location functions are used
+function submitGetLocClearData() { //only used to clear innerHTML when submit and get Location functions are used
     clearMarkers();
     arr = []; //array to keep track of arr and delete
     arrTable = []; //used for table
@@ -332,3 +338,33 @@ function submitGetLocClearData(){ //only used to clear innerHTML when submit and
     document.getElementById("adjustLat").innerHTML = 0;
     document.getElementById("adjustLng").innerHTML = 0;
 }
+
+function geocodeLatLng(geocoder, map, infowindow) {
+    console.log(latCoords);
+    var latlng = {
+        lat: Number(latCoords),
+        lng: Number(lngCoords)
+    }
+
+    geocoder.geocode({
+        'location': latlng
+    }, function (results, status) {
+        console.log(results);
+        console.log(results[5].formatted_address);
+        if (status === 'OK') {
+            if (results[5]) {
+                map.setZoom(1);
+                var pos = {
+                    lat: Number(latCoords),
+                    lng: Number(lngCoords),
+                    content: results[5].formatted_address
+                }
+                addMarker(pos);
+            } else {
+                window.alert('No results found');
+            }
+        } else {
+            window.alert('Geocoder failed due to: ' + status);
+        }
+    });
+}  
