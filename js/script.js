@@ -1,15 +1,14 @@
-var markers = []; //array to keep track of markers and delete
 var map, infoWindow;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
 var lngCoords = document.getElementById("lngInput").value;
-var latCounter = 0; //counter used to keep track if lat function was used
+var arr = []; //array to keep track of arr and delete
+var arrTable = []; //used for table
 var checkLat = []; //an array to check the latitude adjust values
 var checkLng = []; //an array to check the longitude adjust values
 var link = "https://res.cloudinary.com/nasax2000/raw/upload/v1533707950/city-data_o7peii.json"; //json database of metro cities with more than 1,000,000 inhabitants
 var request = new XMLHttpRequest();
 var database;
-var arr = [];
 request.open('GET', link);
 request.responseType = 'json';
 request.send();
@@ -18,7 +17,7 @@ request.onload = function () {
 }
 
 function getLoc() {
-    if (markers.length > 0) {
+    if (arr.length > 0) {
         deleteMarkers();
     }
 
@@ -51,7 +50,7 @@ function submitData() {
     latCoords = Number(latCoords).toFixed(3)
     lngCoords = Number(lngCoords).toFixed(3);
 
-    if (markers.length > 0) {
+    if (arr.length > 0) {
         deleteMarkers();
     }
 
@@ -111,9 +110,9 @@ function getLats() {
     }
     checkLat.push(latAdjust); //push the latitude adjust value to the array
     var latCoords = document.getElementById("latInput").value; //get values from input box
-    var latCounter = 1; //latitude function was used if = 1. 
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
     console.log(latitude);
+    arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
 
     for (var i = 0; i < database.length; i++) {
@@ -124,12 +123,13 @@ function getLats() {
                 content: database[i].city + ", " + database[i].country
             };
             addMarker(pos);
+            arrTable.push(pos);
         }
     }
     if (document.getElementById("clearBtn") !== null) {
         removeButton();
     }
-    //createTable();
+    createTable();
 }
 
 function getLngs() {
@@ -145,6 +145,7 @@ function getLngs() {
     var lngCounter = 1; //longitude function was used if = 1. 
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
     console.log(longitude);
+    arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
 
     for (var i = 0; i < database.length; i++) {
@@ -155,13 +156,113 @@ function getLngs() {
                 content: database[i].city + ", " + database[i].country
             };
             addMarker(pos);
+            arrTable.push(pos);
         }
     }
     if (document.getElementById("clearBtn") !== null) {
         removeButton();
     }
-    //createTable();
+    createTable();
 }
+
+function createTable() {
+    if (document.getElementById("dynamicTable") !== null) {
+        var tr = document.createElement('tr');
+        var th1 = document.createElement('th');
+        var th2 = document.createElement('th');
+        var th3 = document.createElement('th');
+        var thtext1 = document.createTextNode('City');
+        var thtext2 = document.createTextNode('Latitude');
+        var thtext3 = document.createTextNode('Longitude');
+
+        th1.appendChild(thtext1);
+        th2.appendChild(thtext2);
+        th3.appendChild(thtext3);
+
+        tr.appendChild(th1);
+        tr.appendChild(th2);
+        tr.appendChild(th3);
+
+        let table = document.getElementById("dynamicTable");
+
+        table.appendChild(tr);
+    } else {
+        var container = document.getElementById("bodyContainer");
+        var newDiv = document.createElement("div");
+        newDiv.setAttribute("id", "table");
+
+
+        var table = document.createElement('table');
+        table.setAttribute("id", "dynamicTable");
+        var tr = document.createElement('tr');
+
+        var th1 = document.createElement('th');
+        var th2 = document.createElement('th');
+        var th3 = document.createElement('th');
+        var thtext1 = document.createTextNode('City');
+        var thtext2 = document.createTextNode('Latitude');
+        var thtext3 = document.createTextNode('Longitude');
+
+        th1.appendChild(thtext1);
+        th2.appendChild(thtext2);
+        th3.appendChild(thtext3);
+
+        tr.appendChild(th1);
+        tr.appendChild(th2);
+        tr.appendChild(th3);
+
+        table.appendChild(tr);
+        newDiv.appendChild(table);
+
+        container.appendChild(newDiv);
+    }
+
+    for (var i = 0; i < arrTable.length; i++) {
+        console.log(arrTable);
+        let table = document.getElementById("dynamicTable");
+
+        var tr = document.createElement('tr');
+
+        var td1 = document.createElement('td');
+        var td2 = document.createElement('td');
+        var td3 = document.createElement('td');
+
+        var text1 = document.createTextNode(arrTable[i].content);
+        var text2 = document.createTextNode(arrTable[i].lat);
+        var text3 = document.createTextNode(arrTable[i].lng);
+
+        td1.appendChild(text1);
+        td2.appendChild(text2);
+        td3.appendChild(text3);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+
+        table.appendChild(tr);
+    }
+
+    var btn = document.createElement("BUTTON");
+    btn.setAttribute("id", "clearBtn");
+    btn.setAttribute("onclick", "clearTable()");
+    var t = document.createTextNode("Clear");
+    btn.appendChild(t);
+    document.getElementById("table").appendChild(btn);
+}
+
+function clearTable() {
+    let table = document.getElementById("table");
+    table.remove();
+    arrTable = []; //used for table
+    checkLat = []; //an array to check the latitude adjust values
+    checkLng = []; //an array to check the longitude adjust values
+    deleteMarkers();
+}
+
+function removeButton() {
+    let button = document.getElementById("clearBtn");
+    button.remove();
+}
+
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -180,28 +281,28 @@ function addMarker(location) {
         position: location,
         map: map
     });
-    markers.push(marker);
+    arr.push(marker);
 }
 
-// Sets the map on all markers in the array.
+// Sets the map on all arr in the array.
 function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
+    for (var i = 0; i < arr.length; i++) {
+        arr[i].setMap(map);
     }
 }
 
-// Removes the markers from the map, but keeps them in the array.
+// Removes the arr from the map, but keeps them in the array.
 function clearMarkers() {
     setMapOnAll(null);
 }
 
-// Shows any markers currently in the array.
+// Shows any arr currently in the array.
 function showMarkers() {
     setMapOnAll(map);
 }
 
-// Deletes all markers in the array by removing references to them.
+// Deletes all arr in the array by removing references to them.
 function deleteMarkers() {
     clearMarkers();
-    markers = [];
+    arr = [];
 }
