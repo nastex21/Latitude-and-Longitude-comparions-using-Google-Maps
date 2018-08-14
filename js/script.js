@@ -1,7 +1,11 @@
+//Fixed going from "get my coordinates" to "submit location"
+//need to get reverse geo location and content windows
+
 var map, infoWindow;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
-var lngCoords = document.getElementById("lngInput").value;
+var latCoords; //values of the box input lat values
+var lngCoords; //values of the box input lng values
 var arr = []; //array to keep track of arr and delete
 var arrTable = []; //used for table
 var checkLat = []; //an array to check the latitude adjust values
@@ -18,7 +22,7 @@ request.onload = function () {
 
 function getLoc() {
     if (arr.length > 0) {
-        deleteMarkers();
+        submitGetLocClearData();
     }
 
     if (navigator.geolocation) {
@@ -29,6 +33,10 @@ function getLoc() {
             };
             map.setCenter(pos);
             addMarker(pos);
+            arrTable.push(pos);
+            latCoords = pos.lat;
+            lngCoords = pos.lng;
+            console.log(arrTable);
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -47,12 +55,16 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function submitData() {
-    latCoords = Number(latCoords).toFixed(3)
-    lngCoords = Number(lngCoords).toFixed(3);
-
     if (arr.length > 0) {
-        deleteMarkers();
+        submitGetLocClearData();
     }
+    latCoords = document.getElementById("latInput").value; //values of the box input lat values
+    lngCoords = document.getElementById("lngInput").value; //values of the box input lng values
+    latCoords = Number(latCoords).toFixed(3);
+    lngCoords = Number(lngCoords).toFixed(3);
+    console.log(latCoords);
+    console.log(lngCoords);
+
 
     if (Math.abs(latCoords) > 90) {
         window.alert("Latitude needs to be between 90 and -90");
@@ -69,6 +81,7 @@ function submitData() {
 
     map.setCenter(pos);
     addMarker(pos);
+    arrTable.push(pos);
 }
 
 function adjustLatLng(value) {
@@ -109,7 +122,6 @@ function getLats() {
         return;
     }
     checkLat.push(latAdjust); //push the latitude adjust value to the array
-    var latCoords = document.getElementById("latInput").value; //get values from input box
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
     console.log(latitude);
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
@@ -303,6 +315,20 @@ function showMarkers() {
 
 // Deletes all arr in the array by removing references to them.
 function deleteMarkers() {
+    console.log("deleteMarkers() called")
     clearMarkers();
-    arr = [];
+    arr = []; //array to keep track of arr and delete
+    arrTable = []; //used for table
+    checkLat = []; //an array to check the latitude adjust values
+    checkLng = []; //an array to check the longitude adjust values
+}
+
+function submitGetLocClearData(){ //only used to clear innerHTML when submit and get Location functions are used
+    clearMarkers();
+    arr = []; //array to keep track of arr and delete
+    arrTable = []; //used for table
+    checkLat = []; //an array to check the latitude adjust values
+    checkLng = []; //an array to check the longitude adjust values
+    document.getElementById("adjustLat").innerHTML = 0;
+    document.getElementById("adjustLng").innerHTML = 0;
 }
