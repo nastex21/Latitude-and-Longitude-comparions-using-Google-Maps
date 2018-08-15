@@ -1,7 +1,4 @@
-//fix address location errors FIXED
-//fix what happens if you live in the middle of nowhere and the address doesn't show properly or gives an error FIXED?
-//need to fix what happens if no comparable latitude or longitude comparable coordinates are found FIXED
-
+//add popup table?
 var map, infoWindow, geocoder;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
@@ -359,7 +356,7 @@ function geocodeLatLng(geocoder, map, infowindow) { //reverse lookup
     }, function (results, status) {
         if (status === 'OK') {
             if (results[0]) {
-                map.setZoom(1);
+                map.setZoom(2);
                 if (results[0].address_components) {
                     for (var i = 0; i < results[0].address_components.length; i++) {
                         for (var j = 0; j < results[0].address_components[i].types.length; j++) {
