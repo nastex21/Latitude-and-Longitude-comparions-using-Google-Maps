@@ -1,9 +1,10 @@
-//need to get reverse geo location and content windows
+//fix address location errors
+//fix what happens if you live in the middle of nowhere and the address doesn't show properly or gives an error
 
 var map, infoWindow, geocoder;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
-var latCoords; //values of the box input lat values
+var latCoords; //values of the box input lat values 
 var lngCoords; //values of the box input lng values
 var arr = []; //array to keep track of arr and delete
 var arrTable = []; //used for table
@@ -31,8 +32,6 @@ function getLoc() {
                 lng: position.coords.longitude,
             };
             map.setCenter(pos);
-            addMarker(pos);
-            arrTable.push(pos);
             latCoords = pos.lat;
             lngCoords = pos.lng;
             geocodeLatLng(geocoder, map, infoWindow);
@@ -76,8 +75,6 @@ function submitData() {
     }
 
     map.setCenter(pos);
-    addMarker(pos);
-    arrTable.push(pos);
     geocodeLatLng(geocoder, map, infoWindow);
 }
 
@@ -149,8 +146,6 @@ function getLngs() {
         return;
     }
     checkLng.push(lngAdjust); //push the longitude adjust value to the array
-    var lngCoords = document.getElementById("lngInput").value; //get values from input box
-    var lngCounter = 1; //longitude function was used if = 1. 
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
@@ -302,7 +297,6 @@ function addMarker(location) {
     }
 }
 
-
 // Sets the map on all arr in the array.
 function setMapOnAll(map) {
     for (var i = 0; i < arr.length; i++) {
@@ -339,7 +333,7 @@ function submitGetLocClearData() { //only used to clear innerHTML when submit an
     document.getElementById("adjustLng").innerHTML = 0;
 }
 
-function geocodeLatLng(geocoder, map, infowindow) {
+function geocodeLatLng(geocoder, map, infowindow) { //reverse lookup
     console.log(latCoords);
     var latlng = {
         lat: Number(latCoords),
@@ -349,22 +343,71 @@ function geocodeLatLng(geocoder, map, infowindow) {
     geocoder.geocode({
         'location': latlng
     }, function (results, status) {
-        console.log(results);
-        console.log(results[5].formatted_address);
+        console.log(results[0].address_components.length);
+        console.log(results)
         if (status === 'OK') {
-            if (results[5]) {
+            if (results[0]) {
                 map.setZoom(1);
-                var pos = {
-                    lat: Number(latCoords),
-                    lng: Number(lngCoords),
-                    content: results[5].formatted_address
+                if (results[0].address_components) {
+                    for (var i = 0; i < results.length; i++) {
+                        for (var j = 0; j < results[i].types.length; j++) {
+                            if (results[i].types[j] == "locality") {
+                                var pos = {
+                                    lat: Number(latCoords),
+                                    lng: Number(lngCoords),
+                                    content: results[i].formatted_address
+                                };
+                                addMarker(pos);
+                                arrTable.push(pos);
+                                return;
+                            } else if (results[i].types[j] == "postal_code") {
+                                var pos = {
+                                    lat: Number(latCoords),
+                                    lng: Number(lngCoords),
+                                    content: results[i].address_components[2].long_name + ", " + results[i].address_components[4].long_name + " " + results[i].address_components[5].long_name
+                                };
+                                addMarker(pos);
+                                arrTable.push(pos);
+                                return;
+                            }
+                        }
+                    }
+
+                } else {
+                    window.alert('No results found');
                 }
-                addMarker(pos);
             } else {
-                window.alert('No results found');
+                window.alert('Geocoder failed due to: ' + status);
             }
-        } else {
-            window.alert('Geocoder failed due to: ' + status);
         }
-    });
-}  
+    }
+    )
+}
+
+
+/* if (results[0].address_components[6]) {
+                    console.log("yes")
+                    if (results[0].address_components[6].long_name == "United States") {
+                        var pos = {
+                            lat: Number(latCoords),
+                            lng: Number(lngCoords),
+                            content: results[0].address_components[3].long_name + ", " + results[0].address_components[5].long_name + " " + results[0].address_components[6].long_name
+                        };
+                        addMarker(pos);
+                    } else if (results[0].address_components.length == 8) {
+                        console.log(results[0].address_components)
+                        var pos = {
+                            lat: Number(latCoords),
+                            lng: Number(lngCoords),
+                            content: results[0].address_components[4].long_name + ", " + results[0].address_components[6].long_name
+                        };
+                        addMarker(pos)
+                    }
+                } else if (results[0].address_components.length == 4) {
+                    var pos = {
+                        lat: Number(latCoords),
+                        lng: Number(lngCoords),
+                        content: results[0].address_components[2].long_name + ", " + results[0].address_components[3].long_name
+                    }
+                    addMarker(pos);
+                } */
