@@ -1,5 +1,6 @@
-//fix address location errors
-//fix what happens if you live in the middle of nowhere and the address doesn't show properly or gives an error
+//fix address location errors FIXED
+//fix what happens if you live in the middle of nowhere and the address doesn't show properly or gives an error FIXED?
+//need to fix what happens if no comparable latitude or longitude comparable coordinates are found FIXED
 
 var map, infoWindow, geocoder;
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
@@ -119,6 +120,7 @@ function getLats() {
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
+    var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
     for (var i = 0; i < database.length; i++) {
         if (latitude >= Math.floor(database[i].lat) && latitude <= Math.ceil(database[i].lat)) {
@@ -127,14 +129,21 @@ function getLats() {
                 lng: JSON.parse(Number(database[i].lng).toFixed(3)),
                 content: database[i].city + ", " + database[i].country
             };
+            counter++;
             addMarker(pos);
             arrTable.push(pos);
         }
     }
-    if (document.getElementById("clearBtn") !== null) {
-        removeButton();
+
+    if (counter == 0) { // if you no comparable values were found in the databases
+        window.alert("Sorry, no comparable latitude values were found in the database.")
+    } else {
+        if (document.getElementById("clearBtn") !== null) {
+            removeButton();
+        }
+        createTable();
     }
-    createTable();
+
 }
 
 function getLngs() {
@@ -149,6 +158,7 @@ function getLngs() {
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
     arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
+    var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
     for (var i = 0; i < database.length; i++) {
         if (longitude >= Math.floor(database[i].lng) && longitude <= Math.ceil(database[i].lng)) {
@@ -157,14 +167,19 @@ function getLngs() {
                 lng: JSON.parse(Number(database[i].lng).toFixed(3)),
                 content: database[i].city + ", " + database[i].country
             };
+            counter++;
             addMarker(pos);
             arrTable.push(pos);
         }
     }
-    if (document.getElementById("clearBtn") !== null) {
-        removeButton();
+    if (counter == 0) { // if you no comparable values were found in the databases
+        window.alert("Sorry, no comparable longitude values were found in the database.")
+    } else {
+        if (document.getElementById("clearBtn") !== null) {
+            removeButton();
+        }
+        createTable();
     }
-    createTable();
 }
 
 function createTable() {
@@ -334,80 +349,51 @@ function submitGetLocClearData() { //only used to clear innerHTML when submit an
 }
 
 function geocodeLatLng(geocoder, map, infowindow) { //reverse lookup
-    console.log(latCoords);
     var latlng = {
         lat: Number(latCoords),
         lng: Number(lngCoords)
     }
-
+    var text = "";
     geocoder.geocode({
         'location': latlng
     }, function (results, status) {
-        console.log(results[0].address_components.length);
-        console.log(results)
         if (status === 'OK') {
             if (results[0]) {
                 map.setZoom(1);
                 if (results[0].address_components) {
-                    for (var i = 0; i < results.length; i++) {
-                        for (var j = 0; j < results[i].types.length; j++) {
-                            if (results[i].types[j] == "locality") {
-                                var pos = {
-                                    lat: Number(latCoords),
-                                    lng: Number(lngCoords),
-                                    content: results[i].formatted_address
-                                };
-                                addMarker(pos);
-                                arrTable.push(pos);
-                                return;
-                            } else if (results[i].types[j] == "postal_code") {
-                                var pos = {
-                                    lat: Number(latCoords),
-                                    lng: Number(lngCoords),
-                                    content: results[i].address_components[2].long_name + ", " + results[i].address_components[4].long_name + " " + results[i].address_components[5].long_name
-                                };
-                                addMarker(pos);
-                                arrTable.push(pos);
-                                return;
+                    for (var i = 0; i < results[0].address_components.length; i++) {
+                        for (var j = 0; j < results[0].address_components[i].types.length; j++) {
+                            if (results[0].address_components[i].types[j] == "locality") {
+                                text += results[0].address_components[i].long_name + ", ";
                             }
+
+                            if (!results[0].address_components[i].types[j] == "locality" && results[0].address_components[i].types[j] == "administrative_area_level_2") {
+                                text += results[0].address_components[i].long_name + ", ";
+                            }
+
+                            if (results[0].address_components[i].types[j] == "administrative_area_level_1") {
+                                text += results[0].address_components[i].long_name + " ";
+                            }
+
+                            if (results[0].address_components[i].types[j] == "country") {
+                                text += results[0].address_components[i].long_name;
+                            }
+
+                            var pos = {
+                                lat: Number(latCoords),
+                                lng: Number(lngCoords),
+                                content: text
+                            };
+                            addMarker(pos);
+                            arrTable.push(pos);
                         }
                     }
-
-                } else {
-                    window.alert('No results found');
                 }
             } else {
-                window.alert('Geocoder failed due to: ' + status);
+                window.alert('No results found');
             }
+        } else {
+            window.alert('Geocoder failed due to: ' + status);
         }
-    }
-    )
+    })
 }
-
-
-/* if (results[0].address_components[6]) {
-                    console.log("yes")
-                    if (results[0].address_components[6].long_name == "United States") {
-                        var pos = {
-                            lat: Number(latCoords),
-                            lng: Number(lngCoords),
-                            content: results[0].address_components[3].long_name + ", " + results[0].address_components[5].long_name + " " + results[0].address_components[6].long_name
-                        };
-                        addMarker(pos);
-                    } else if (results[0].address_components.length == 8) {
-                        console.log(results[0].address_components)
-                        var pos = {
-                            lat: Number(latCoords),
-                            lng: Number(lngCoords),
-                            content: results[0].address_components[4].long_name + ", " + results[0].address_components[6].long_name
-                        };
-                        addMarker(pos)
-                    }
-                } else if (results[0].address_components.length == 4) {
-                    var pos = {
-                        lat: Number(latCoords),
-                        lng: Number(lngCoords),
-                        content: results[0].address_components[2].long_name + ", " + results[0].address_components[3].long_name
-                    }
-                    addMarker(pos);
-                } */
