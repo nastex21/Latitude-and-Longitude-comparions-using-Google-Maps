@@ -3,6 +3,8 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Heebo:500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <title>My Google Map</title>
 </head>
@@ -10,53 +12,66 @@
 <body>
     <div class="container" id="bodyContainer">
         <div id="header">
-            <h1 id="latLngMap">Latitude and Longitude Comparison</h1>
+            <h1 id="latLngMap">Metro Cities with Similar Latitudes or Longitudes</h1>
+        </div>
+        <div id="info">
+            <p>How to use:</p>
+            <button class="accordion">MORE</button>
+            <div id="info-content" class="panel">
+                <p>By entering latitude and longitude values or by clicking on the "Set My Location" button, you can now
+                    see markers on the map of similar latitude or longitude coordinates of big metropolitan areas (with a
+                    population of greater than one million people) from around the world. You can also adjust the latitude
+                    and longitude values using the adjuster by subtracting or adding up to 10 degrees. Data will also appear
+                    on the right of your screen. </p><br>
+                <p>Source of population data: <a href="http://www.demographia.com/db-worldua.pdf">http://www.demographia.com/db-worldua.pdf</a></p>
+            </div>
         </div>
         <div id="outInput">
+            <div id="adjusterDiv"><span>Adjuster</span></div>
             <div class="inputDivs" id="coordButton">
                 <form id="latitudeLongitude">
                     <span id="latLabel">Latitude</span>
                     <input id="latInput" type="text" name="latitude" placeholder="25.761" value="25.761">
                     <span id="lngLabel">Longitude</span>
                     <input id="lngInput" type="text" name="longitude" placeholder="-80.191" value="-80.191">
-                    <input type="button" id="submitBtn" value="Submit" onclick="submitData()">
+                    <button id="submitBtn" class="otherBtns" type="button" value="submitBtn" onclick="submitData()">Submit</button>
                 </form>
                 <div class="bottomButtons">
-                    <button class="inputButtons" onclick="getLoc()">Get My Coordinates</button>
+                    <button class="inputButtons otherBtns" onclick="getLoc()">Set My Location</button>
                 </div>
             </div>
             <div class="inputDivs iDivs" id="latDiv">
                 <div class="latAdjust">
-                    <span id="latAdjuster">Latitude Adjuster</span>
+                    <span id="latAdjuster">Latitude</span>
                 </div>
                 <div class="outputAdjust">
                     <span id="adjustLat">0</span>
                 </div>
                 <div class="negButton">
-                    <button value="negLat" onclick="adjustLatLng(value)">-</button>
+                    <button class="otherBtns" value="negLat" onclick="adjustLatLng(value)">-</button>
                 </div>
                 <div class="posButton">
-                    <button value="posLat" onclick="adjustLatLng(value)">+</button>
+                    <button class="otherBtns" value="posLat" onclick="adjustLatLng(value)">+</button>
                 </div>
                 <div class="bottomButtons">
-                    <button class="inputButtons" onclick="getLats()">Get Comparable Latitudes</button>
+                    <button class="inputButtons otherBtns" onclick="getLats()">Compare</button>
                 </div>
             </div>
             <div class="inputDivs iDivs" id="lngDiv">
                 <div class="lngAdjust">
-                    <span id="lngAdjuster">Longitude Adjuster</span>
+                    <span id="lngAdjuster">Longitude</span>
                 </div>
                 <div class="outputAdjust">
                     <span id="adjustLng">0</span>
                 </div>
                 <div class="negButton">
-                    <button value="negLng" onclick="adjustLatLng(value)">-</button>
+                    <button class="otherBtns" value="negLng" onclick="adjustLatLng(value)">-</button>
                 </div>
                 <div class="posButton">
-                    <button value="posLng" onclick="adjustLatLng(value)">+</button>
+                    <button class="otherBtns" value="posLng" onclick="adjustLatLng(value)">+</button>
                 </div>
                 <div class="bottomButtons">
-                    <button class="inputButtons" onclick="getLngs()">Get Comparable Longitudes</button>
+                    <button class="inputButtons otherBtns" onclick="getLngs()">Compare</button>
                 </div>
             </div>
         </div>
@@ -64,7 +79,7 @@
     </div>
 
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=ADD GOOGLE MAP JAVASCRIPT API KEY&callback=initMap ">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=GOOGLE JAVASCRIPT API KEY&callback=initMap ">
     </script>
     <script src="js/script.js "></script>
 </body>

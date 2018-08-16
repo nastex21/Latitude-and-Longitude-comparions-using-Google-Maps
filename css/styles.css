@@ -3,29 +3,123 @@ body {
     width: 100%;
     height: 100%;
     margin: 0;
+    font-family: 'Raleway', sans-serif;
 }
 
 body {
-    background: #3a6186;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #89253e, #3a6186);
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #89253e, #3a6186);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #232334;
+    color: #C1FFA8;  /* fallback for old browsers */
 }
 
 .container {
     height: 95%;
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    grid-template-areas: ". header header header header header header header table ." ". outInput outInput outInput outInput outInput outInput outInput table ." ". outInput outInput outInput outInput outInput outInput outInput table ." ". map map map map map map map table ." ". map map map map map map map table ." ". map map map map map map map table ." ". map map map map map map map table ." ". map map map map map map map table .";
+    grid-auto-columns: 3% 10% 65% 19% 3%;
+    grid-auto-rows: 10% 33% 55%;
+    grid-template-areas: ". info header table ." 
+    ". info outInput table ." 
+    ". info map table ." ;
     grid-column-gap: 10px;
     grid-row-gap: 15px;
 }
 
 #header {
     grid-area: header;
+    font-size: .7em;
+    font-family: 'Heebo', sans-serif;
+}
+
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    width: 100%;
+    padding: 5px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1em;
+    transition: 0.4s;
+}
+
+.active, .accordion:hover {
+    background-color: #ccc;
+}
+
+.accordion:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+#info{
+    grid-area: info;
+    margin-left: -30%;
+    color: black;
+    font-family: 'Raleway', sans-serif;
+    font-size: .8em;
+}
+
+#info > p {
+    color: #C1FFA8;
+}
+
+#outInput {
+    color: #C1FFA8;
+    font-weight: 800;
+    grid-area: outInput;
+    display: grid;
+    grid-auto-columns: 33% 33% 33%;
+    grid-auto-rows: 10% 90%;
+    grid-template-areas: ". adjusterDiv adjusterDiv" 
+    "coordButton latDiv lngDiv";
+}
+
+#adjusterDiv{
+    grid-area: adjusterDiv;
+    text-align: center;
+    border-top:    solid white;
+    border-right:  solid white; 
+    border-left: solid white;
+}
+
+#coordButton {
+    grid-area: coordButton;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+#latDiv {
+    grid-area: latDiv;
+    border-bottom:    solid white;
+    border-left: solid white;
+}
+
+#lngDiv {
+    grid-area: lngDiv;
+    border-bottom:    solid white;
+    border-right: solid white;
+}
+
+.iDivs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
 }
 
 #latLngMap {
@@ -34,37 +128,8 @@ body {
 }
 
 h1 {
-    text-align: center;
     vertical-align: middle;
-}
-
-#outInput {
-    grid-area: outInput;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-}
-
-#table {
-    grid-area: table;
-    margin-top: 5%;
-    margin-left: 20%;
-    margin-right: 20%;
-    width: 100%;
-    line-height: 1.5em;
-}
-
-#table>th {
-    text-align: center;
-}
-
-#map {
-    grid-area: map;
-}
-
-#coordButton {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    color: #C1FFA8;
 }
 
 form {
@@ -95,19 +160,51 @@ form {
     grid-column: 2 / 3;
 }
 
+.otherBtns {
+	border: none;
+	font-family: inherit; 
+	color: inherit;
+	background: none;
+	cursor: pointer; 
+	display : inline-block; 
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 500;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+    transition: all 0.3s;
+    border: 3px solid #fff;
+	color: #fff;
+}
+
+.otherBtns:after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.otherBtns:hover,
+.otherBtns:active {
+	color: #0e83cd;
+	background: #fff;
+} 
+
+.negButton > button,
+.posButton > button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 8px 1px 8px;
+} 
+
 #submitBtn {
     grid-row: 3 / 4;
     grid-column: 1 / 3;
-}
-
-#clearBtn {
-    margin-top: 5%;
-}
-
-.iDivs {
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(2, 1fr)
 }
 
 .bottomButtons {
@@ -123,25 +220,51 @@ form {
     grid-column-end: span 2;
 }
 
-.negButton,
-.posButton,
 .outputAdjust,
 .latAdjust,
 .lngAdjust,
 #latLabel,
 #lngLabel,
 input,
+.negButton,
+.posButton,
 #submitBtn {
     margin: auto;
 }
 
-#submitBtn {
-    width: 30%;
+input {
+    width: 50%;
+    height: 60%;
+    text-align: center;
+    border-style: dashed;
+    border-color: white;
+} 
+
+input[type=text] {
+    box-sizing: border-box;
+    background-color: #232334;
+    color: white;
 }
 
-input {
-    width: 80%;
-    height: 50%;
+#table {
+    grid-area: table;
+    margin-top: 1%;
+    width: 100%;
+    line-height: 1.5em;
+    font-size: .8em;
+    font-weight: 600;
+    overflow: auto;
+}
+
+#dynamicTable>tr>th {
+    text-align: center;
+    background-color: #2c3e50;
+    color: white;
+}
+
+
+#map {
+    grid-area: map;
 }
 
 table>tr,
@@ -151,4 +274,24 @@ table>tr>th {
 
 table>tr>th {
     text-align: left;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #570859; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }

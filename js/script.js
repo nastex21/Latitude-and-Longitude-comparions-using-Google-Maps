@@ -1,5 +1,8 @@
-//add popup table?
+//when page is first started and you press "Get Comparable Latitude/Longitude" buttons
+//hide info on the left side with button
 var map, infoWindow, geocoder;
+var acc = document.getElementsByClassName("accordion"); //for accordion
+var i; //for accordion
 var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
 var lngAdjust = document.getElementById("adjustLng").innerHTML; //get the longitude adjust value
 var latCoords; //values of the box input lat values 
@@ -16,6 +19,18 @@ request.responseType = 'json';
 request.send();
 request.onload = function () {
     database = request.response;
+}
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    });
 }
 
 function getLoc() {
@@ -112,10 +127,11 @@ function getLats() {
     if (passTest !== -1) {
         window.alert(latAdjust + " latitude adjust values are already in table");
         return;
+    } else {
+        checkLat.push(latAdjust); //push the latitude adjust value to the array
     }
-    checkLat.push(latAdjust); //push the latitude adjust value to the array
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
-    arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
+    arrTable = []; // gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
     var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
@@ -150,10 +166,11 @@ function getLngs() {
     if (passTest !== -1) {
         window.alert(lngAdjust + " longitude adjust values are already in table");
         return;
+    } else {
+        checkLng.push(lngAdjust); //push the longitude adjust value to the array
     }
-    checkLng.push(lngAdjust); //push the longitude adjust value to the array
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
-    arrTable = [];// gotta clear arrTable otherwise the table repopulates previous uncleared values
+    arrTable = []; // gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
     var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
@@ -266,9 +283,11 @@ function clearTable() {
     let table = document.getElementById("table");
     table.remove();
     arrTable = []; //used for table
-    checkLat = []; //an array to check the latitude adjust values
-    checkLng = []; //an array to check the longitude adjust values
+    checkLat = [];
+    checkLng = [];
     deleteMarkers();
+    document.getElementById("adjustLat").innerHTML = 0;
+    document.getElementById("adjustLng").innerHTML = 0;
 }
 
 function removeButton() {
@@ -331,8 +350,6 @@ function deleteMarkers() {
     clearMarkers();
     arr = []; //array to keep track of arr and delete
     arrTable = []; //used for table
-    checkLat = []; //an array to check the latitude adjust values
-    checkLng = []; //an array to check the longitude adjust values
 }
 
 function submitGetLocClearData() { //only used to clear innerHTML when submit and get Location functions are used
