@@ -1,5 +1,3 @@
-//when page is first started and you press "Get Comparable Latitude/Longitude" buttons
-//hide info on the left side with button
 var map, infoWindow, geocoder;
 var acc = document.getElementsByClassName("accordion"); //for accordion
 var i; //for accordion
@@ -14,6 +12,7 @@ var checkLng = []; //an array to check the longitude adjust values
 var link = "https://res.cloudinary.com/nasax2000/raw/upload/v1533707950/city-data_o7peii.json"; //json database of metro cities with more than 1,000,000 inhabitants
 var request = new XMLHttpRequest();
 var database;
+var counter = 0; //use to find if user hasn't used "Get My Coordinates" or submitted coordinates.
 request.open('GET', link);
 request.responseType = 'json';
 request.send();
@@ -34,6 +33,7 @@ for (i = 0; i < acc.length; i++) {
 }
 
 function getLoc() {
+    counter = 1;
     if (arr.length > 0) {
         submitGetLocClearData();
     }
@@ -47,6 +47,8 @@ function getLoc() {
             map.setCenter(pos);
             latCoords = pos.lat;
             lngCoords = pos.lng;
+            document.getElementById("latInput").value = latCoords.toFixed(3);
+            document.getElementById("lngInput").value = lngCoords.toFixed(3);
             geocodeLatLng(geocoder, map, infoWindow);
         }, function () {
             handleLocationError(true, infoWindow, map.getCenter());
@@ -66,6 +68,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function submitData() {
+    counter = 1;
     if (arr.length > 0) {
         submitGetLocClearData();
     }
@@ -92,8 +95,6 @@ function submitData() {
 }
 
 function adjustLatLng(value) {
-    latAdjust = Number(latAdjust);
-    lngAdjust = Number(lngAdjust);
     if (value == "posLat") {
         if (latAdjust >= -10 && latAdjust < 10) {
             latAdjust++;
@@ -121,6 +122,10 @@ function adjustLatLng(value) {
 }
 
 function getLats() {
+    if (counter == 0) {
+        latCoords = document.getElementById("latInput").value;
+    }
+    var latLngChecker = 0; //check if any latitude or longitude coordinates were found
     var latAdjust = document.getElementById("adjustLat").innerHTML; // get the latitude adjust value
     var latAdjust = Number(latAdjust);
     var passTest = checkLat.indexOf(latAdjust); //check checkLat array for latitude adjuster
@@ -133,7 +138,6 @@ function getLats() {
     var latitude = latAdjust + Number(latCoords); //add the latAdjust value plus the latitude value
     arrTable = []; // gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
-    var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
     for (var i = 0; i < database.length; i++) {
         if (latitude >= Math.floor(database[i].lat) && latitude <= Math.ceil(database[i].lat)) {
@@ -142,14 +146,13 @@ function getLats() {
                 lng: JSON.parse(Number(database[i].lng).toFixed(3)),
                 content: database[i].city + ", " + database[i].country
             };
-            counter++;
+            latLngChecker++;
             addMarker(pos);
             arrTable.push(pos);
         }
     }
-
-    if (counter == 0) { // if you no comparable values were found in the databases
-        window.alert("Sorry, no comparable latitude values were found in the database.")
+    if (latLngChecker == 0) {
+        window.alert("Sorry, no similar latitude values were found in the database.")
     } else {
         if (document.getElementById("clearBtn") !== null) {
             removeButton();
@@ -157,9 +160,15 @@ function getLats() {
         createTable();
     }
 
+
+
 }
 
 function getLngs() {
+    if (counter == 0) {
+        lngCoords = document.getElementById("lngInput").value;
+    }
+    var latLngChecker = 0; //check if any latitude or longitude coordinates were found
     var lngAdjust = document.getElementById("adjustLng").innerHTML; // get the longitude adjust value
     var lngAdjust = Number(lngAdjust);
     var passTest = checkLng.indexOf(lngAdjust); //check checkLng array for longitude adjuster
@@ -172,7 +181,6 @@ function getLngs() {
     var longitude = lngAdjust + Number(lngCoords); //add the lngAdjust value plus the longitude value
     arrTable = []; // gotta clear arrTable otherwise the table repopulates previous uncleared values
     deleteMarkers();
-    var counter = 0; //keep track of how many times conditions were met. If 0, return error
 
     for (var i = 0; i < database.length; i++) {
         if (longitude >= Math.floor(database[i].lng) && longitude <= Math.ceil(database[i].lng)) {
@@ -181,19 +189,21 @@ function getLngs() {
                 lng: JSON.parse(Number(database[i].lng).toFixed(3)),
                 content: database[i].city + ", " + database[i].country
             };
-            counter++;
+            latLngChecker++;
             addMarker(pos);
             arrTable.push(pos);
         }
     }
-    if (counter == 0) { // if you no comparable values were found in the databases
-        window.alert("Sorry, no comparable longitude values were found in the database.")
+
+    if (latLngChecker == 0) {
+        window.alert("Sorry, no similar longitude values were found in the database.")
     } else {
         if (document.getElementById("clearBtn") !== null) {
             removeButton();
         }
         createTable();
     }
+
 }
 
 function createTable() {
