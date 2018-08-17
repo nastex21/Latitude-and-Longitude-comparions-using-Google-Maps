@@ -26,7 +26,6 @@
             </div>
         </div>
         <div id="outInput">
-            <div id="adjusterDiv"><span>Adjuster</span></div>
             <div class="inputDivs" id="coordButton">
                 <form id="latitudeLongitude">
                     <span id="latLabel">Latitude</span>
@@ -35,42 +34,47 @@
                     <input id="lngInput" type="text" name="longitude" placeholder="-80.191" value="-80.191">
                     <button id="submitBtn" class="otherBtns" type="button" value="submitBtn" onclick="submitData()">Submit</button>
                 </form>
-                <div class="bottomButtons">
+                <div class="bottomButtons" id="locBtn">
                     <button class="inputButtons otherBtns" onclick="getLoc()">Set My Location</button>
                 </div>
             </div>
-            <div class="inputDivs iDivs" id="latDiv">
-                <div class="latAdjust">
-                    <span id="latAdjuster">Latitude</span>
+            <div id="adjusterDiv">
+                <div id="adjusterHeader">
+                    <span>Adjuster</span>
                 </div>
-                <div class="outputAdjust">
-                    <span id="adjustLat">0</span>
+                <div class="inputDivs iDivs" id="latDiv">
+                    <div class="latAdjust adjustLable">
+                        <span id="latAdjuster">Latitude</span>
+                    </div>
+                    <div class="outputAdjust">
+                        <span id="adjustLat">0</span>
+                    </div>
+                    <div class="negButton">
+                        <button class="otherBtns" value="negLat" onclick="adjustLatLng(value)">-</button>
+                    </div>
+                    <div class="posButton">
+                        <button class="otherBtns" value="posLat" onclick="adjustLatLng(value)">+</button>
+                    </div>
+                    <div class="bottomButtons bottomBtnsAdjust">
+                        <button class="inputButtons otherBtns" onclick="getLats()">Compare</button>
+                    </div>
                 </div>
-                <div class="negButton">
-                    <button class="otherBtns" value="negLat" onclick="adjustLatLng(value)">-</button>
-                </div>
-                <div class="posButton">
-                    <button class="otherBtns" value="posLat" onclick="adjustLatLng(value)">+</button>
-                </div>
-                <div class="bottomButtons">
-                    <button class="inputButtons otherBtns" onclick="getLats()">Compare</button>
-                </div>
-            </div>
-            <div class="inputDivs iDivs" id="lngDiv">
-                <div class="lngAdjust">
-                    <span id="lngAdjuster">Longitude</span>
-                </div>
-                <div class="outputAdjust">
-                    <span id="adjustLng">0</span>
-                </div>
-                <div class="negButton">
-                    <button class="otherBtns" value="negLng" onclick="adjustLatLng(value)">-</button>
-                </div>
-                <div class="posButton">
-                    <button class="otherBtns" value="posLng" onclick="adjustLatLng(value)">+</button>
-                </div>
-                <div class="bottomButtons">
-                    <button class="inputButtons otherBtns" onclick="getLngs()">Compare</button>
+                <div class="inputDivs iDivs" id="lngDiv">
+                    <div class="lngAdjust adjustLable">
+                        <span id="lngAdjuster">Longitude</span>
+                    </div>
+                    <div class="outputAdjust">
+                        <span id="adjustLng">0</span>
+                    </div>
+                    <div class="negButton">
+                        <button class="otherBtns" value="negLng" onclick="adjustLatLng(value)">-</button>
+                    </div>
+                    <div class="posButton">
+                        <button class="otherBtns" value="posLng" onclick="adjustLatLng(value)">+</button>
+                    </div>
+                    <div class="bottomButtons bottomBtnsAdjust">
+                        <button class="inputButtons otherBtns" onclick="getLngs()">Compare</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,7 +82,7 @@
     </div>
 
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=GOOGLE MAP JAVASCRIPT API GOES HERE&callback=initMap ">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=JAVASCRIPT GOOGLE MAPS&callback=initMap ">
     </script>
     <script src="js/script.js "></script>
 </body>
