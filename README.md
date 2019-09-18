@@ -11,3 +11,7 @@ After that, I created a JavaScript app that used the geocode-geonames wrapper (h
 Using the compilated data from both projects, I created this app. A basic synopsis of it is that it compares your coordinates or the coordinates you entered with the ones in the database and outputs the hits by adding markers to Google Maps and adding them to a table for better visual representation.
 
 The “Adjuster” section takes the value you entered (or set) and by clicking on the plus/minus signs, you can add or subtract degrees to that value and then compare them to the database.
+
+*Needs*
+
+- Changing the zoom makes the boxes add a bit weird. Need to fix.
